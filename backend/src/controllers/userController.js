@@ -1,6 +1,7 @@
 import { createUserModel, loginUserModel, verificarCredencialesModel, isEmailRegistered } from "./../models/userModel.js";
 import jwt from "jsonwebtoken";
 import bcryp from "bcrypt";
+import "dotenv/config";
 
 
 const createUser = async (req, res) => {
@@ -19,6 +20,8 @@ const createUser = async (req, res) => {
     }
 }
 
+
+
 const loginUser = async (req, res) => {
     try {
         const { password, email } = req.body;
@@ -29,7 +32,7 @@ const loginUser = async (req, res) => {
             const passMatch = bcryp.compareSync(password, hashedPass);
             if (!passMatch) throw { code: 404, message: "No se encontró ningún usuario con estas credenciales" }
             else {
-                const token = jwt.sign({ email }, "keyyyd");
+                const token = jwt.sign({ email }, process.env.JWT_SECRET);
                 res.send({ token });
             }
         }
@@ -42,10 +45,7 @@ const loginUser = async (req, res) => {
 
 const verificarCredenciales = async (req, res) => {
     try {
-        const Authorization = req.header("Authorization");
-        const token = Authorization.split("Bearer ",)[1];
-        jwt.verify(token, "keyyyd");
-        const { email } = jwt.decode(token);
+        const { email } = req.user;
         const result = await verificarCredencialesModel(email);
         if (result.rowCount) console.log(`el usuario ${email} ha sido verificado correctamente`);
         res.status(200).send(result.rows);
