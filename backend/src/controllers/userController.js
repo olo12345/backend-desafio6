@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import bcryp from "bcrypt";
 import "dotenv/config";
 
-
 const createUser = async (req, res) => {
     try {
         if (await isEmailRegistered(email)) throw { code: 400, message: "Existe un usuario con ese Email registrado previamente" }
@@ -16,15 +15,16 @@ const createUser = async (req, res) => {
         }
     }
     catch (err) {
+        if (err.code === "23502") {
+            res.status(400).json({message: "No se ingresó usuario o contraseña"});
+        }
         res.status(500).send(err);
     }
 }
 
-
-
 const loginUser = async (req, res) => {
     try {
-        const { password, email } = req.body;
+        const { password, email } = req.user;
         const result = await loginUserModel(email);
         if (!result.rowCount) throw { code: 404, message: "No se encontró ningún usuario con estas credenciales" }
         else {
@@ -54,6 +54,5 @@ const verificarCredenciales = async (req, res) => {
         res.status(500).send(err);
     }
 }
-
 
 export { createUser, loginUser, verificarCredenciales };
