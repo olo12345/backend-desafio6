@@ -1,8 +1,7 @@
-
 import { Router } from "express";
-import { verificarCredenciales } from "./../src/controllers/userController";
+import { verificarCredenciales } from "./../src/controllers/userController.js";
 
-const router = Router();
+const routes = Router();
 
 routes.get("/usuarios", verificarCredenciales);
 

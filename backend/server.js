@@ -11,8 +11,8 @@ app.use(cors());
 
 const PORT = process.env.PORT || 3000;
 
-app.use("", UserRouter);
 app.use("", AuthRouter);
+app.use("", UserRouter);
 
 
 app.listen(PORT, console.log(`Servidor iniciado en http://localhost:${PORT}`));
