@@ -16,7 +16,7 @@ const createUser = async (req, res) => {
     }
     catch (err) {
         if (err.code === "23502") {
-            res.status(400).json({message: "No se ingresó usuario o contraseña"});
+            res.status(400).json({ message: "No se ingresó usuario o contraseña" });
         }
         res.status(500).send(err);
     }
@@ -32,7 +32,7 @@ const loginUser = async (req, res) => {
             const passMatch = bcryp.compareSync(password, hashedPass);
             if (!passMatch) throw { code: 404, message: "No se encontró ningún usuario con estas credenciales" }
             else {
-                const token = jwt.sign({ email }, process.env.JWT_SECRET);
+                const token = jwt.sign({ email, rol }, process.env.JWT_SECRET);
                 res.send({ token });
             }
         }
